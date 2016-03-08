@@ -3,7 +3,12 @@
 # - name: get OpenCV Source
 #   shell: wget https://github.com/Itseez/opencv/archive/3.1.0.zip
 
+- name: Check if OpenCV is already installed
+  shell:  pkg-config --modversion opencv
+  register: output_pkg_opencv
+
 - name: install required dependencies
+  when: output_pkg_opencv.stdout.find('3.') == -1
   become: yes
   apt: name={{item}} state=latest
   with_items:
@@ -18,6 +23,7 @@
     - libv4l-dev  #needed to make the installation pass
 
 - name: install optional dependencies
+  when: output_pkg_opencv.stdout.find('3.') == -1
   become: yes
   apt: name={{item}} state=latest
   with_items:
@@ -32,13 +38,16 @@
     - libdc1394-22-dev
 
 - name: get latest opencv source
+  when: output_pkg_opencv.stdout.find('3.') == -1
   git: repo=https://github.com/Itseez/opencv.git
        dest=/home/vagrant/opencv
 
 - name: create installation directory
+  when: output_pkg_opencv.stdout.find('3.') == -1
   file: path=/home/vagrant/opencv/release state=directory
 
 - name: run cmake
+  when: output_pkg_opencv.stdout.find('3.') == -1
   shell: >
     chdir=/home/vagrant/opencv/release state=directory
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
@@ -48,11 +57,13 @@
     sudo make install
 
 - name: run make
+  when: output_pkg_opencv.stdout.find('3.') == -1
   shell: >
     chdir=/home/vagrant/opencv/release state=directory
     make -j8
 
 - name: run make install
+  when: output_pkg_opencv.stdout.find('3.') == -1
   become: yes
   shell: >
     chdir=/home/vagrant/opencv/release state=directory
