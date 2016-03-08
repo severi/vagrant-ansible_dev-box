@@ -1,0 +1,8 @@
+- name: install emacs and prelude
+  include: emacs.yml
+
+- name: Install set of apt-packages
+  become: yes
+  apt: name={{item}} state=latest update_cache=yes install_recommends=yes
+  with_items:
+    - terminator

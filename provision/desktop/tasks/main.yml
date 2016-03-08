@@ -9,4 +9,4 @@
   become: yes
   become_method: sudo
 
-- include: emacs.yml
+- include: applications.yml
