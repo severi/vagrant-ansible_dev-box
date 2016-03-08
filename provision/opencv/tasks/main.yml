@@ -6,6 +6,7 @@
 - name: Check if OpenCV is already installed
   shell:  pkg-config --modversion opencv
   register: output_pkg_opencv
+  ignore_errors: yes
 
 - name: install required dependencies
   when: output_pkg_opencv.stdout.find('3.') == -1
