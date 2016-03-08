@@ -1,0 +1,31 @@
+# based on https://facebook.github.io/react-native/docs/getting-started-on-linux.html
+
+- name: clone watchamn repo
+  git: repo=https://github.com/facebook/watchman.git
+       dest=/home/vagrant/watchman
+       version=v4.1.0
+
+- name: autogen
+  shell: >
+    chdir=/home/vagrant/watchman
+    ./autogen.sh && ./configure && make
+
+- name: make install
+  become: yes
+  shell: >
+    chdir=/home/vagrant/watchman
+    make install
+
+- name: install flow
+  become: yes
+  npm: name=flow-bin global=yes
+
+- name: install react-native
+  become: yes
+  npm: name=react-native-cli global=yes
+
+
+
+
+
+       

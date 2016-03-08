@@ -6,9 +6,12 @@
 #   roles:
 #     - ionic
 
-- hosts: all
-  roles:
-    - opencv
+# - hosts: all
+#   roles:
+#     - opencv
 
+# - hosts: all
+#   roles:
+#     - react-native
 
 
