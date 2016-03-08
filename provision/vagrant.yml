@@ -1,6 +1,15 @@
 - hosts: all
   roles:
     - common
-    - ansible-role-android-sdk
-    - ionic
+
+# - hosts: all
+#   roles:
+#     - ansible-role-android-sdk
+#     - ionic
+
+- hosts: all
+  roles:
+    - opencv
+
+
 

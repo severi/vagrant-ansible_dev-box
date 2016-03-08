@@ -1,0 +1,60 @@
+# based on http://docs.opencv.org/3.0-beta/doc/tutorials/introduction/linux_install/linux_install.html#linux-installation
+
+# - name: get OpenCV Source
+#   shell: wget https://github.com/Itseez/opencv/archive/3.1.0.zip
+
+- name: install required dependencies
+  become: yes
+  apt: name={{item}} state=latest
+  with_items:
+    - build-essential
+    - cmake
+    - git
+    - libgtk2.0-dev
+    - pkg-config
+    - libavcodec-dev
+    - libavformat-dev
+    - libswscale-dev
+    - libv4l-dev  #needed to make the installation pass
+
+- name: install optional dependencies
+  become: yes
+  apt: name={{item}} state=latest
+  with_items:
+    - python-dev
+    - python-numpy
+    - libtbb2
+    - libtbb-dev
+    - libjpeg-dev
+    - libpng-dev
+    - libtiff-dev
+    - libjasper-dev
+    - libdc1394-22-dev
+
+- name: get latest opencv source
+  git: repo=https://github.com/Itseez/opencv.git
+       dest=/home/vagrant/opencv
+
+- name: create installation directory
+  file: path=/home/vagrant/opencv/release state=directory
+
+- name: run cmake
+  shell: >
+    chdir=/home/vagrant/opencv/release state=directory
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+    &&
+    make -j8
+    &&
+    sudo make install
+
+- name: run make
+  shell: >
+    chdir=/home/vagrant/opencv/release state=directory
+    make -j8
+
+- name: run make install
+  become: yes
+  shell: >
+    chdir=/home/vagrant/opencv/release state=directory
+    sudo make install
+

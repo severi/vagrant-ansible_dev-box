@@ -1,0 +1,12 @@
+- name: Install emacs
+  apt: name={{item}} state=latest update_cache=yes install_recommends=yes
+  with_items:
+    - emacs24
+  become: yes
+  become_method: sudo
+
+- name: install prelude
+  shell: curl -L https://github.com/bbatsov/prelude/raw/master/utils/installer.sh | sh
+  become: yes
+  become_user: vagrant
+  ignore_errors: yes

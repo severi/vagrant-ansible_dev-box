@@ -1,0 +1,12 @@
+- name: install desktop
+  apt: name={{item}} state=latest update_cache=yes install_recommends=no
+  with_items:
+    - build-essential
+    - xorg
+    - ubuntu-desktop
+    - unity-lens-files
+    - unity-lens-applications
+  become: yes
+  become_method: sudo
+
+- include: emacs.yml
