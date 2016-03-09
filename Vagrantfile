@@ -49,10 +49,14 @@ Vagrant.configure(2) do |config|
   #
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
-  # vb.gui = true #if desktop is needed uncomment this
-  #
-    # Customize the amount of memory on the VM:
-    vb.memory = "2050"
+    vb.gui = true #if desktop is needed uncomment this
+    vb.customize [
+      "modifyvm", :id,
+      "--memory", "8192",
+      "--cpus", "4",
+      "--accelerate3d", "on",
+      "--vram", "128"
+    ]
   end
   #
   # View the documentation for the provider you are using for more

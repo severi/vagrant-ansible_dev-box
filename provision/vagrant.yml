@@ -10,8 +10,8 @@
 #   roles:
 #     - opencv
 
-# - hosts: all
-#   roles:
-#     - react-native
+- hosts: all
+  roles:
+    - react-native
 
 

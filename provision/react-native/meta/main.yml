@@ -2,3 +2,4 @@
 dependencies:
 - role: nodejs
 - role: ansible-role-android-sdk
+- role: desktop
