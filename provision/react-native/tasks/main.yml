@@ -3,14 +3,14 @@
 - name: clone watchamn repo
   git: repo=https://github.com/facebook/watchman.git
        dest=/home/vagrant/watchman
-       version=v4.1.0
+       version=v4.5.0 # 4.1.0 does not work when running packager
 
-- name: autogen
+- name: configure watchman
   shell: >
     chdir=/home/vagrant/watchman
     ./autogen.sh && ./configure && make
 
-- name: make install
+- name: install watchman
   become: yes
   shell: >
     chdir=/home/vagrant/watchman
