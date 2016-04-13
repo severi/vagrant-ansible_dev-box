@@ -1,13 +1,54 @@
----
-
 ###########################################################################################
 # Original source: https://github.com/nickpack/ansible-role-android-sdk/tree/master/tasks #
-# Modified to enable building ionic app for android                                       #
+# Modified to enable building                                                             #
+#   - ionic app for android                                                               #
+#   - react native for android                                                            #
 ###########################################################################################
 
-- include: dependencies.yml
-- include: sdktools.yml
-- include: sdksinstall.yml
+# Dependancies
+- name: Enable i386 arch in aptitude
+  become: yes
+  command: dpkg --add-architecture i386
+
+- name: Install build dependencies on Ubuntu
+  become: yes
+  apt: pkg={{ item }} state=latest
+  with_items: "{{ubuntu_dependency_packages}}"
+
+# SDK Tools
+- name: Ensure Android SDK tools directory exists
+  become: yes
+  file: path={{ android_sdk_install_location }} state=directory
+
+- name: Download Android SDK tools
+  become: yes
+  get_url: url={{ android_sdk_download_location }} dest={{ android_sdk_install_location }}/sdk-download.tgz
+
+- name: Extract Android SDK tools
+  become: yes
+  unarchive: src={{ android_sdk_install_location }}/sdk-download.tgz dest={{ android_sdk_install_location }} copy=no
+
+- name: Put the SDK install expect script in place
+  become: yes
+  template: src=sdk-install.expect.j2 dest={{ android_sdk_install_location }}/sdk-install.expect mode=0755
+
+- name: Change permissions on SDK tools
+  become: yes
+  file: path={{ android_sdk_install_location }}/android-sdk-linux recurse=yes mode=0755
+
+- name: Set system wide PATH to contain Android SDK tools
+  become: yes
+  lineinfile: dest=/etc/environment regexp=^PATH line='PATH="/usr/local/sbin:/usr/local/bin:{{ android_sdk_install_location }}/android-sdk-linux/build-tools/{{ android_sdk_base_buildtools_version }}:{{ android_sdk_install_location }}/android-sdk-linux/tools/:{{ android_sdk_install_location }}/android-sdk-linux/build-tools/:{{ android_sdk_install_location }}/android-sdk-linux/platform-tools/:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games"'
+  when: android_sdk_update_path
+
+- name: Set system wide ANDROID_HOME environment variable
+  become: yes
+  lineinfile: dest=/etc/environment regexp=^ANDROID_HOME line='ANDROID_HOME="{{ android_sdk_install_location }}/android-sdk-linux/"'
+
+# SDK Install
+- name: Install Android SDKs for applicable releases
+  become: yes
+  command: "{{ android_sdk_install_location }}/sdk-install.expect"
 
 
 #####################################################
@@ -26,11 +67,10 @@
   become: yes
   shell: chown -R vagrant:vagrant /opt/android-sdk-linux
 
-- name: Install Android SDKs
-  shell: echo y | android update sdk -u -a -t "{{ item }}" 
+- name: Install Android SDKs platform tools
+  shell: echo y | {{ android_sdk_install_location }}/android-sdk-linux/tools/android update sdk -u -a -t "{{ item }}" 
   with_items:
-    - tools
     - platform-tools
     - build-tools
-    - android-22
+    - android-23
     - extra-android-support
