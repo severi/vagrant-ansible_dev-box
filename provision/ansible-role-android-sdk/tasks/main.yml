@@ -67,10 +67,26 @@
   become: yes
   shell: chown -R vagrant:vagrant /opt/android-sdk-linux
 
-- name: Install Android SDKs platform tools
+- name: Install Android SDKs dependancies
   shell: echo y | {{ android_sdk_install_location }}/android-sdk-linux/tools/android update sdk -u -a -t "{{ item }}" 
   with_items:
     - platform-tools
-    - build-tools
+    - tools
     - android-23
     - extra-android-support
+#
+    - build-tools-23.0.1
+    - sys-img-armeabi-v7a-android-23
+
+# android list targets
+# android create avd -n <name> -t <targetID>
+# emulator -avd <name>
+
+# react-native init <projectName>
+# cd <projectName>
+# react-native run-android
+
+# cd <projectName>
+# react-native start
+
+
