@@ -3,8 +3,8 @@
   register: node_exists
   ignore_errors: True
 
-- name: Install nodejs 4.2.3
-  get_url: url=http://nodejs.org/dist/v4.2.3/node-v4.2.3-linux-x64.tar.gz dest=/tmp/node-v4.2.3-linux-x64.tar.gz
+- name: Install nodejs {{node_version}}
+  get_url: url=http://nodejs.org/dist/v{{node_version}}/node-v{{node_version}}-linux-x64.tar.gz dest=/tmp/node-v{{node_version}}-linux-x64.tar.gz
   register: download
   when: node_exists.rc == 1
 
